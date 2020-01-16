@@ -200,6 +200,8 @@ public class MapResultActivity extends AppCompatActivity implements MapView.MapV
     }
     //Set address when drag mapview
 
+
+
     @Override
     public void onClick(View v) {
         switch(v.getId()) {

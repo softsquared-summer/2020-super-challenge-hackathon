@@ -5,11 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a2020_hack.R;
+import com.example.a2020_hack.src.Main.MainActivity;
 import com.example.a2020_hack.src.searchresult.models.SearchPublicTransResult;
 
 import org.w3c.dom.Text;
@@ -38,6 +40,12 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
         holder.mTextViewPrice.setText(mArrayList.get(position).getInfo().getPayment()+"원");
         holder.mTextViewTime.setText(mArrayList.get(position).getInfo().getTotalTime()+"분");
+
+
+        mArrayList.get(position).getInfo().setPayment(mArrayList.get(position).getInfo().getPayment());
+        holder.mTextViewPrice.setText(mArrayList.get(position).getInfo().getPayment()+"원");
+        holder.mTextViewTime.setText(mArrayList.get(position).getInfo().getTotalTime()+"분");
+
     }
 
     @Override
@@ -55,5 +63,34 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             this.mTextViewPrice = itemView.findViewById(R.id.list_search_result_tv_price);
             this.mTextViewTime = itemView.findViewById(R.id.list_search_result_tv_time);
         }
+    }
+
+    private static double distance(double lat1, double lon1, double lat2, double lon2, String unit) {
+
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+
+        if (unit == "kilometer") {
+            dist = dist * 1.609344;
+        } else if(unit == "meter"){
+            dist = dist * 1609.344;
+        }
+
+        return (dist);
+    }
+
+
+    // This function converts decimal degrees to radians
+    private static double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    // This function converts radians to decimal degrees
+    private static double rad2deg(double rad) {
+        return (rad * 180 / Math.PI);
     }
 }
