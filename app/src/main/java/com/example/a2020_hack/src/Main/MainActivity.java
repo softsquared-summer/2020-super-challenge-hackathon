@@ -70,7 +70,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private MainAdapter mMainAdapter;
     private ListView mLvHistory;
     private Gson gson;
-    private SharedPreferences sharedPreferences;
+    private SharedPreferences sSharedPreferences;
 
 
     @Override
@@ -98,10 +98,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         if (gson.fromJson(json, type) != null) {
             mMainListItems = gson.fromJson(json, type);
         } else {
-            for (int i = 0; i < 5; i++) {
-                mMainListItems.add(new MainListItem("인하대후문삼거리", "인천 미추홀구 낙성동로 135(용현동)", "주안역[1호선]", "인천 미추홀구 주안로 95-19"
-                ,0,0,0,0));
-            }
+
         }
 
         mMainAdapter = new MainAdapter(mMainListItems, this);
