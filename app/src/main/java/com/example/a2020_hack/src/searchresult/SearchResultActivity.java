@@ -38,6 +38,9 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 
+import static com.example.a2020_hack.src.Main.MainActivity.destLat;
+import static com.example.a2020_hack.src.Main.MainActivity.destLng;
+import static com.example.a2020_hack.src.Main.MainActivity.srcLat;
 import static com.example.a2020_hack.src.Main.MainActivity.srcLng;
 
 public class SearchResultActivity extends BaseActivity {
@@ -152,7 +155,7 @@ public class SearchResultActivity extends BaseActivity {
                                     double x1 = endX;
                                     double y1 = endY;
 
-                                    double x2 = MainActivity.destLng;
+                                    double x2 = destLng;
                                     double y2 = MainActivity.destLat;
 
                                     double dis = distance(y1, x1, y2, x2,"meter");
@@ -261,7 +264,7 @@ public class SearchResultActivity extends BaseActivity {
                     }
                     System.out.println("사이즈: " + pointSearchResults.size());
                     for(int i=0; i<pointSearchResults.size(); i++){
-                        SearchPublicTransPath("126.65394103371672", "37.53470035850456", Double.toString(pointSearchResults.get(i).getX()), Double.toString(pointSearchResults.get(i).getY()), "0", "0", "0");
+                        SearchPublicTransPath(srcLng+"", srcLat+"", Double.toString(pointSearchResults.get(i).getX()), Double.toString(pointSearchResults.get(i).getY()), "0", "0", "0");
                     }
                 }
 //                else if(api == API.SEARCH_STATION){
@@ -309,7 +312,7 @@ public class SearchResultActivity extends BaseActivity {
 
 //        SearchPublicTransPath("126.926493082645", "37.6134436427887", "127.126936754911", "37.5004198786564", "0", "0", "0");
 //        getBusRouteNum("12021");
-        NearStation("126.926493082645", "37.6134436427887");
+        NearStation(destLng+"", destLat+"");
 
     }
 

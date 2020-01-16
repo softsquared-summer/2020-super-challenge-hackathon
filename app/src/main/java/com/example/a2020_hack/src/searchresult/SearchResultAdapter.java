@@ -18,6 +18,8 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
+import static com.example.a2020_hack.src.Main.MainActivity.mDestName;
+
 public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapter.CustomViewHolder> {
 
     private Context mContext;
@@ -47,8 +49,8 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
                 holder.mTextViewStartName.setText(mArrayList.get(position).getSubPath().get(i).getStartName());
                 holder.mTextViewEndName.setText(mArrayList.get(position).getSubPath().get(i).getEndName());
                 holder.mTextViewBusNo.setText(mArrayList.get(position).getSubPath().get(i).getLane().get(0).getBusNo()+"");
-                mArrayList.get(position).getSubPath().get(i).getEndX();
-                mArrayList.get(position).getSubPath().get(i).getEndY();
+                String dest = mDestName.substring(4);
+                holder.mTextViewRealDst.setText(dest);
                 return;
             }
         }
@@ -66,6 +68,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
         TextView mTextViewStartName;
         TextView mTextViewEndName;
         TextView mTextViewBusNo;
+        TextView mTextViewRealDst;
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -74,6 +77,7 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
             this.mTextViewStartName = itemView.findViewById(R.id.startName);
             this.mTextViewEndName = itemView.findViewById(R.id.endName);
             this.mTextViewBusNo = itemView.findViewById(R.id.busNo);
+            this.mTextViewRealDst = itemView.findViewById(R.id.realDst);
         }
     }
 

@@ -65,6 +65,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public static double srcLng = 0;//경도
     public static double destLat = 0;//위도
     public static double destLng = 0;//경도
+    public static String mDestName = null;
 
     public static String HOME_NAME = "은마아파트";
     public static String HOME_DETAIL= "서울 강남구 대치동 316";
@@ -140,6 +141,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 destLng = mMainListItems.get(position).getDestLng();
                 srcLat = mMainListItems.get(position).getSrcLat();
                 srcLng = mMainListItems.get(position).getSrcLng();
+                mDestName = mMainListItems.get(position).getDestName();
                 System.out.println("저장된 위경도: " + srcLat+ "  " + srcLng + "  " + destLat + "  " + destLng);
                 startActivity(new Intent(MainActivity.this, SearchResultActivity.class));
             }
@@ -245,6 +247,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     showCustomToast("도착지를 입력해주세요.");
                 }
                 else{
+                    mDestName = mEtDest.getText().toString();
                     Intent intent = new Intent(MainActivity.this, SearchResultActivity.class);
                     startActivity(intent);
                     System.out.println("저장된 위경도: " + srcLat+ "  " + srcLng + "  " + destLat + "  " + destLng);
