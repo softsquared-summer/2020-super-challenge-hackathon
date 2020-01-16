@@ -38,6 +38,16 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
     public void onBindViewHolder(@NonNull CustomViewHolder holder, int position) {
         holder.mTextViewPrice.setText(mArrayList.get(position).getInfo().getPayment()+"원");
         holder.mTextViewTime.setText(mArrayList.get(position).getInfo().getTotalTime()+"분");
+        for(int i=0; i<mArrayList.get(position).getSubPath().size(); i++){
+            if(mArrayList.get(position).getSubPath().get(i).getTrafficType()==2){
+                holder.mTextViewStartName.setText(mArrayList.get(position).getSubPath().get(i).getStartName());
+                holder.mTextViewEndName.setText(mArrayList.get(position).getSubPath().get(i).getEndName());
+                holder.mTextViewBusNo.setText(mArrayList.get(position).getSubPath().get(i).getLane().get(0).getBusNo()+"");
+                mArrayList.get(position).getSubPath().get(i).getEndX();
+                mArrayList.get(position).getSubPath().get(i).getEndY();
+                return;
+            }
+        }
     }
 
     @Override
@@ -49,11 +59,17 @@ public class SearchResultAdapter extends RecyclerView.Adapter<SearchResultAdapte
 
         TextView mTextViewPrice;
         TextView mTextViewTime;
+        TextView mTextViewStartName;
+        TextView mTextViewEndName;
+        TextView mTextViewBusNo;
 
         public CustomViewHolder(@NonNull View itemView) {
             super(itemView);
             this.mTextViewPrice = itemView.findViewById(R.id.list_search_result_tv_price);
             this.mTextViewTime = itemView.findViewById(R.id.list_search_result_tv_time);
+            this.mTextViewStartName = itemView.findViewById(R.id.startName);
+            this.mTextViewEndName = itemView.findViewById(R.id.endName);
+            this.mTextViewBusNo = itemView.findViewById(R.id.busNo);
         }
     }
 }

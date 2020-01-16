@@ -27,6 +27,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.example.a2020_hack.R;
 import com.example.a2020_hack.src.MapResult.MapResultActivity;
+import com.example.a2020_hack.src.base.BaseActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,11 +41,11 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
 
-public class MapSearchActivity extends AppCompatActivity implements View.OnClickListener {
+public class MapSearchActivity extends BaseActivity implements View.OnClickListener {
 
     private EditText searchEt;
     private ImageView searchTv;
-    private TextView logoTv;
+    private TextView logoTv, textMode;
     private ImageView presentTv;
     private ListView listView;
     public ListView listview;
@@ -61,12 +62,12 @@ public class MapSearchActivity extends AppCompatActivity implements View.OnClick
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_search);
-        View view = getWindow().getDecorView();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (view != null) {
-                view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            }
-        }
+//        View view = getWindow().getDecorView();
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            if (view != null) {
+//                view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+//            }
+//        }
 
 //        getHashKey();
 
@@ -77,6 +78,7 @@ public class MapSearchActivity extends AppCompatActivity implements View.OnClick
 //        searchTv = findViewById(R.id.map_search_finish_tv);
         presentTv = findViewById(R.id.map_search_present_tv);
         listView = findViewById(R.id.map_search_list_view);
+        textMode = findViewById(R.id.textMode);
 //        logoTv = findViewById(R.id.map_search_logo_tv);
 
 //        backTv.setOnClickListener(this);
@@ -88,13 +90,13 @@ public class MapSearchActivity extends AppCompatActivity implements View.OnClick
         listView.setAdapter(adapter);
 
         Intent intent = getIntent();
-        state = intent.getIntExtra("mode", 1);
-//        if(state ==1) {
-//            logoTv.setText("출발지를 선택하세요");
-//        }
-//        else if(state ==2){
-//            logoTv.setText("목적지를 선택하세요");
-//        }
+        state = intent.getIntExtra("mode", 0);
+        if(state ==0) {
+            textMode.setText("출발");
+        }
+        else if(state ==1){
+            textMode.setText("도착");
+        }
         searchEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {

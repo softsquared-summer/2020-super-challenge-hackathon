@@ -7,8 +7,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="android:statusBarColor">#ffffff</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">#0A1040</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
