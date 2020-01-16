@@ -99,7 +99,10 @@ public class MapResultActivity extends AppCompatActivity implements MapView.MapV
         address = intent.getExtras().getString("address");
         x = intent.getExtras().getDouble("x");
         y = intent.getExtras().getDouble("y");
+        state = intent.getIntExtra("mode", 0);
+        Toast.makeText(this, state+"", Toast.LENGTH_SHORT).show();
         //Bring to values from MapSearchActivity
+
 
         mapViewContainer = (ViewGroup) findViewById(R.id.map_show);
         addrTv = findViewById(R.id.map_result_default_addr_tv);
@@ -125,7 +128,6 @@ public class MapResultActivity extends AppCompatActivity implements MapView.MapV
         //Bring to marker from layout
 
         intent = getIntent();
-        state = intent.getIntExtra("mode", 1);
     }
 
 
@@ -203,14 +205,31 @@ public class MapResultActivity extends AppCompatActivity implements MapView.MapV
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.result_finish_btn:
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.putExtra("name", name);
-                intent.putExtra("address", address);
-                intent.putExtra("x", x);
-                intent.putExtra("y", y);
-                intent.putExtra("mode", mode);
-                Toast.makeText(this, name + "\n" + address, Toast.LENGTH_SHORT).show();
-                startActivity(intent);
+                if(state == 0) {
+                    if(address == null || address == "") {
+                        MainActivity.srcDetail = "";
+                    }
+                    else {
+                        MainActivity.srcDetail = address;
+                    }
+                    MainActivity.srcName = name;
+                }
+                else {
+                    if(address == null || address == "") {
+                        MainActivity.destDetail = "";
+                    }
+                    else {
+                        MainActivity.destDetail = address;
+                    }
+                    MainActivity.destName = name;
+                }
+//                Intent intent = new Intent(this, MainActivity.class);
+//                intent.putExtra("name", name);
+//                intent.putExtra("address", address);
+//                intent.putExtra("x", x);
+//                intent.putExtra("y", y);
+//                intent.putExtra("mode", mode);
+//                startActivity(intent);
                 finish();
                 break;
         }

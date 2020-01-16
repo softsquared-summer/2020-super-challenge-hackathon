@@ -26,6 +26,7 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.a2020_hack.R;
@@ -41,7 +42,36 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     private double latitude, longitude;
     private static final int REQUEST_CODE_LOCATION = 2;
 
+    public static String srcName ="";
+    public static String srcDetail ="";
+    public static String destName = "";
+    public static String destDetail = "";
+
+    private EditText mEtSrc, mEtDest;
+
     Geocoder geocoder = new Geocoder(this);
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        if(srcName == "") {
+            mEtSrc.setText("예) 용현동 12-3 또는 용현아파트");
+        }
+        else {
+            mEtSrc.setText(srcName);
+        }
+
+        Toast.makeText(this, destName, Toast.LENGTH_SHORT).show();
+
+        if(destName == "") {
+            mEtDest.setText("예) 용현동 12-3 또는 용현아파트");
+        }
+        else {
+            mEtDest.setText(destName);
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +82,14 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
 
         getHashKey(this);
 
+        mEtSrc = findViewById(R.id.main_src_et);
+        mEtDest = findViewById(R.id.main_dest_et);
+
+//        intent.putExtra("name", name);
+//        intent.putExtra("address", address);
+//        intent.putExtra("x", x);
+//        intent.putExtra("y", y);
+//        intent.putExtra("mode", mode);
     }
 
     private void getMyLocation() {

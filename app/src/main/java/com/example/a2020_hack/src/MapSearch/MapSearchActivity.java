@@ -56,6 +56,8 @@ public class MapSearchActivity extends AppCompatActivity implements View.OnClick
     private Activity activity;
     int state=0;
 
+    private String name, address;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map_search);
@@ -86,7 +88,7 @@ public class MapSearchActivity extends AppCompatActivity implements View.OnClick
         listView.setAdapter(adapter);
 
         Intent intent = getIntent();
-        state = intent.getIntExtra("select", 1);
+        state = intent.getIntExtra("mode", 1);
 //        if(state ==1) {
 //            logoTv.setText("출발지를 선택하세요");
 //        }
@@ -126,8 +128,8 @@ public class MapSearchActivity extends AppCompatActivity implements View.OnClick
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 MapSearchData item = (MapSearchData) adapterView.getItemAtPosition(position);
 
-                String name = adapter.itemList.get(position).getName();
-                String address = adapter.itemList.get(position).getAddress();
+                name = adapter.itemList.get(position).getName();
+                address = adapter.itemList.get(position).getAddress();
                 double x = adapter.itemList.get(position).getX();
                 double y = adapter.itemList.get(position).getY();
 
@@ -137,7 +139,7 @@ public class MapSearchActivity extends AppCompatActivity implements View.OnClick
                 intent.putExtra("address", address);
                 intent.putExtra("x", x);
                 intent.putExtra("y", y);
-                intent.putExtra("select",state);
+                intent.putExtra("mode",state);
                 startActivity(intent);
                 finish();
             }
@@ -201,10 +203,10 @@ public class MapSearchActivity extends AppCompatActivity implements View.OnClick
                 if(names.size()!=0) {
                     Intent intent = new Intent(context, MapResultActivity.class);
                     intent.putExtra("name", names.get(0).getAddressLine(0));
-                    intent.putExtra("address", names.get(0).getAddressLine(0));
+                    intent.putExtra("address", address);
                     intent.putExtra("x", latitude);
                     intent.putExtra("y", longitude);
-                    intent.putExtra("mode", getIntent().getExtras().getInt("mode"));
+                    intent.putExtra("mode", state);
 
                     startActivity(intent);
                     finish();
