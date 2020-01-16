@@ -9,7 +9,7 @@
     <ImageView
         android:id="@+id/temp"
         android:layout_width="wrap_content"
-        android:layout_height="60dp"
+        android:layout_height="50dp"
         android:layout_marginTop="15dp"
         android:layout_marginBottom="15dp"
         android:src="@drawable/not_sleep_logo"/>
@@ -33,10 +33,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="15dp"
                 android:text="출발"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
                 android:textColor="#ffffff"
                 android:textSize="23dp"></TextView>
 
             <EditText
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
                 android:id="@+id/main_src_et"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
@@ -51,10 +55,12 @@
                 android:singleLine="true"
                 android:textColor="#ffffff"
                 android:textColorHint="#ffffff"
-                android:textSize="18sp" />
+                android:textSize="14sp" />
 
             <ImageView
                 android:id="@+id/main_src_iv"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
                 android:layout_width="30dp"
                 android:onClick="onClick"
                 android:layout_marginLeft="10dp"
@@ -74,11 +80,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="15dp"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
                 android:text="도착"
                 android:textColor="#ffffff"
                 android:textSize="23dp"></TextView>
 
             <EditText
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
                 android:id="@+id/main_dest_et"
                 android:onClick="onClick"
                 android:layout_width="match_parent"
@@ -93,10 +103,12 @@
                 android:singleLine="true"
                 android:textColor="#ffffff"
                 android:textColorHint="#ffffff"
-                android:textSize="18sp" />
+                android:textSize="14sp" />
 
             <ImageView
                 android:layout_marginLeft="10dp"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
                 android:id="@+id/main_dest_iv"
                 android:onClick="onClick"
                 android:layout_width="30dp"
@@ -110,8 +122,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|center_vertical"
             android:layout_marginTop="20dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
             android:background="@drawable/btn_main_background"
             android:includeFontPadding="false"
             android:paddingTop="5dp"
@@ -129,21 +142,24 @@
             android:textColor="#ffffff"
             android:textSize="15dp"
             android:layout_marginTop="10dp"
-            android:text="최근 검색 기록"></TextView>
+            android:layout_marginBottom="15dp"
+            android:text="최근 검색 기록"/>
     </LinearLayout>
 
     <FrameLayout
         xmlns:app="http://schemas.android.com/apk/res-auto"
 
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#3D4266">
         <ListView
             android:id="@+id/lv_recent_history"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#3D4266"
             android:padding="5dp"
             android:dividerHeight="15dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

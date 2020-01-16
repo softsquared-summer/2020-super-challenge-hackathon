@@ -38,6 +38,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 
+import static com.example.a2020_hack.src.Main.MainActivity.srcLng;
+
 public class SearchResultActivity extends BaseActivity {
 
     private Context mContext;
@@ -72,6 +74,8 @@ public class SearchResultActivity extends BaseActivity {
     private boolean loopFlag2End = false;
 
     ArrayList<PointSearchResult> pointSearchResults = new ArrayList<>();
+    int searchCount = 0;
+    boolean isStart = false;
 
 
     @Override
@@ -82,6 +86,7 @@ public class SearchResultActivity extends BaseActivity {
         mRecyclerView = findViewById(R.id.searchResult_rv);
         mSearchResultAdapter = new SearchResultAdapter(mContext, mArrayList);
         mRecyclerView.setAdapter(mSearchResultAdapter);
+
         StrictMode.enableDefaults();
 
         oDsayService = ODsayService.init(this, getString(R.string.odsay_key));
@@ -245,7 +250,7 @@ public class SearchResultActivity extends BaseActivity {
                 else if(api == API.POINT_SEARCH){
                     try {
                         JSONArray jsonArray = oDsayData.getJson().getJSONObject("result").getJSONArray("station");
-                        for(int i=0; i<7; i++){
+                        for(int i=jsonArray.length()-7; i<jsonArray.length(); i++){
                             String stationName = jsonArray.getJSONObject(i).getString("stationName");
                             int stationID = jsonArray.getJSONObject(i).getInt("stationID");
                             double x = jsonArray.getJSONObject(i).getDouble("x");
@@ -255,10 +260,11 @@ public class SearchResultActivity extends BaseActivity {
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        System.out.println("에러: " + e.toString());
                     }
                     System.out.println("사이즈: " + pointSearchResults.size());
                     for(int i=0; i<pointSearchResults.size(); i++){
-                        SearchPublicTransPath("126.653976", "37.534922", Double.toString(pointSearchResults.get(i).getX()), Double.toString(pointSearchResults.get(i).getY()), "0", "0", "0");
+                        SearchPublicTransPath("126.65394103371672", "37.53470035850456", Double.toString(pointSearchResults.get(i).getX()), Double.toString(pointSearchResults.get(i).getY()), "0", "0", "0");
                     }
                 }
 //                else if(api == API.SEARCH_STATION){

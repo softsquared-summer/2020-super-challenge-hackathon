@@ -28,11 +28,11 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         View view = getWindow().getDecorView();
-        if(Build.VERSION.SDK_INT >=Build.VERSION_CODES.M){
-            if (view != null) {
-                view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            }
-        }
+//        if(Build.VERSION.SDK_INT >=Build.VERSION_CODES.M){
+//            if (view != null) {
+//                view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+//            }
+//        }
 
     }
 

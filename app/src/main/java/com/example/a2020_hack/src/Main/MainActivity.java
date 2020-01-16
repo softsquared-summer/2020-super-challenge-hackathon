@@ -31,6 +31,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -132,6 +133,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mEtSrc = findViewById(R.id.main_src_et);
         mEtDest = findViewById(R.id.main_dest_et);
 
+        mLvHistory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                destLat = mMainListItems.get(position).getDestLat();
+                destLng = mMainListItems.get(position).getDestLng();
+                srcLat = mMainListItems.get(position).getSrcLat();
+                srcLng = mMainListItems.get(position).getSrcLng();
+                System.out.println("저장된 위경도: " + srcLat+ "  " + srcLng + "  " + destLat + "  " + destLng);
+                startActivity(new Intent(MainActivity.this, SearchResultActivity.class));
+            }
+        });
 
         gson = new Gson();
         sSharedPreferences = getApplicationContext().getSharedPreferences("a2020_hack", Context.MODE_PRIVATE);
@@ -226,9 +238,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 startActivity(intent);
                 break;
             case R.id.main_route_search :
-
-                showCustomToast("경로 찾기 시작합니다!");
-                saveRecent();
+                if (mEtSrc.getText().toString().equals("")){
+                    showCustomToast("출발지를 입력해주세요.");
+                }
+                else if(mEtDest.getText().toString().equals("")){
+                    showCustomToast("도착지를 입력해주세요.");
+                }
+                else{
+                    Intent intent = new Intent(MainActivity.this, SearchResultActivity.class);
+                    startActivity(intent);
+                    System.out.println("저장된 위경도: " + srcLat+ "  " + srcLng + "  " + destLat + "  " + destLng);
+                    saveRecent();
+                }
                 break;
 
             case R.id.fab:

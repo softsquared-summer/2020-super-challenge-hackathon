@@ -86,12 +86,6 @@ public class MapResultActivity extends AppCompatActivity implements MapView.MapV
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        View view = getWindow().getDecorView();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (view != null) {
-                view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            }
-        }
         setContentView(R.layout.activity_map_result);
 
         Intent intent = getIntent();

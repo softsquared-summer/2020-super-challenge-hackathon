@@ -10,9 +10,11 @@
     
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="80dp"
         android:background="#0A1040"
-        android:src="@drawable/ic_launcher_background"/>
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:src="@drawable/not_sleep_logo"/>
 
     <TextView
         android:layout_width="match_parent"
