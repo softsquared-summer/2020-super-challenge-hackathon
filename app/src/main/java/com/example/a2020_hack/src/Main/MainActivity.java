@@ -3,6 +3,7 @@ package com.example.a2020_hack.src.Main;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -14,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import com.example.a2020_hack.src.MapSearch.MapSearchActivity;
+import com.example.a2020_hack.src.base.BaseActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -27,15 +29,23 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.a2020_hack.R;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity  implements View.OnClickListener{
+import static com.example.a2020_hack.src.base.ApplicationClass.sSharedPreferences;
+
+
+public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private Intent intent;
     private LocationManager locationManager;
@@ -51,6 +61,56 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
 
     Geocoder geocoder = new Geocoder(this);
 
+    //현우코드 최근검색어 리스트뷰 연결
+    private ArrayList<MainListItem> mMainListItems = new ArrayList<>();
+    private MainAdapter mMainAdapter;
+    private ListView mLvHistory;
+    private Gson gson;
+    private SharedPreferences sharedPreferences;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        getMyLocation();
+
+        getHashKey(this);
+        //현우 start
+        mLvHistory = findViewById(R.id.lv_recent_history);
+
+
+        mEtSrc = findViewById(R.id.main_src_et);
+        mEtDest = findViewById(R.id.main_dest_et);
+
+
+        gson = new Gson();
+        sSharedPreferences = getApplicationContext().getSharedPreferences("a2020_hack", Context.MODE_PRIVATE);
+        String json = sSharedPreferences.getString("recent", null);
+        Type type = new TypeToken<ArrayList<MainListItem>>() {
+        }.getType();
+        if (gson.fromJson(json, type) != null) {
+            mMainListItems = gson.fromJson(json, type);
+        } else {
+            for (int i = 0; i < 3; i++) {
+                mMainListItems.add(new MainListItem("인하대후문삼거리", "인천 미추홀구 낙성동로 135(용현동)", "주안역[1호선]", "인천 미추홀구 주안로 95-19"));
+            }
+        }
+
+        mMainAdapter = new MainAdapter(mMainListItems, this);
+        mLvHistory.setAdapter(mMainAdapter);
+    }
+//
+//    public void saveRecent() {
+//        mMainAdapter.notifyDataSetChanged();
+//        SharedPreferences.Editor editor = sSharedPreferences.edit();
+//        String json = gson.toJson(mMainListItems);
+//        editor.putString("recent", json);
+//        editor.apply();
+//    }
+
     @Override
     protected void onRestart() {
         super.onRestart();
@@ -62,7 +122,6 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
             mEtSrc.setText(srcName);
         }
 
-        Toast.makeText(this, destName, Toast.LENGTH_SHORT).show();
 
         if(destName == "") {
             mEtDest.setText("예) 용현동 12-3 또는 용현아파트");
@@ -71,27 +130,6 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
             mEtDest.setText(destName);
         }
     }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        getMyLocation();
-
-        getHashKey(this);
-
-        mEtSrc = findViewById(R.id.main_src_et);
-        mEtDest = findViewById(R.id.main_dest_et);
-
-//        intent.putExtra("name", name);
-//        intent.putExtra("address", address);
-//        intent.putExtra("x", x);
-//        intent.putExtra("y", y);
-//        intent.putExtra("mode", mode);
-    }
-
     private void getMyLocation() {
         Location currentLocation = null;
         // Register the listener with the Location Manager to receive location updates
@@ -125,7 +163,6 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-
 
 
                 }
@@ -167,7 +204,6 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
                     context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_SIGNATURES);
 
 
-
             for (Signature signature : info.signatures) {
 
                 MessageDigest md;
@@ -187,7 +223,6 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
             Log.e("name not found", e.toString());
 
         }
-
 
 
         if (keyHash != null) {

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#0A1040"
+    android:padding="10dp">
+
+    <TextView
+    android:text="출발 | 인하대후문삼거리[교차로]"
+    android:id="@+id/tv_departure"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:textSize="16sp"
+    android:textStyle="bold"
+    android:textColor="@android:color/white"/>
+
+    <TextView
+        android:text="인천 미추홀구 낙섬동로 135"
+        android:id="@+id/tv_departure_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:textSize="12sp"
+        android:textColor="@android:color/white"/>
+    <TextView
+        android:text="도착| 주안역[1호선]"
+        android:id="@+id/tv_arrival"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/white"/>
+    <TextView
+        android:text="인천 미추홀구 주안로 95-19"
+        android:id="@+id/tv_arrival_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:layout_marginStart="40dp"
+        android:textColor="@android:color/white"/>
+
+
+
+</LinearLayout>

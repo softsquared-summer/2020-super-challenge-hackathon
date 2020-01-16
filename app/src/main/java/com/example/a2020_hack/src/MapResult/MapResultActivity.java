@@ -100,7 +100,6 @@ public class MapResultActivity extends AppCompatActivity implements MapView.MapV
         x = intent.getExtras().getDouble("x");
         y = intent.getExtras().getDouble("y");
         state = intent.getIntExtra("mode", 0);
-        Toast.makeText(this, state+"", Toast.LENGTH_SHORT).show();
         //Bring to values from MapSearchActivity
 
 
