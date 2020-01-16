@@ -117,6 +117,7 @@
             android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:text="경로 찾기"
+            android:onClick="onClick"
             android:textColor="#000000"
             android:textSize="20sp"
             android:textStyle="bold" />
@@ -131,14 +132,74 @@
             android:text="최근 검색 기록"></TextView>
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/lv_recent_history"
+    <FrameLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#3D4266"
-        android:padding="5dp"
-        android:dividerHeight="15dp"
-        />
+        android:layout_height="match_parent">
+        <ListView
+            android:id="@+id/lv_recent_history"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#3D4266"
+            android:padding="5dp"
+            android:dividerHeight="15dp"
+            />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="230dp"
+            android:layout_marginRight="15sp"
+            android:src="@drawable/ic_freind_24dp"
+            android:visibility="invisible"
+            app:backgroundTint="#F7A217"
+            app:elevation="6dp"
+            app:borderWidth="0dp"
+            app:pressedTranslationZ="12dp" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="160dp"
+            android:layout_marginRight="15sp"
+            android:src="@drawable/ic_school_24dp"
+            android:visibility="invisible"
+            app:backgroundTint="#F7A217"
+            app:elevation="6dp"
+            app:borderWidth="0dp"
+            app:pressedTranslationZ="12dp" />
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="90dp"
+            android:layout_marginRight="15sp"
+            android:src="@drawable/ic_house_24dp"
+            android:visibility="invisible"
+            app:borderWidth="0dp"
+            app:backgroundTint="#F7A217"
+            app:elevation="6dp"
+            app:pressedTranslationZ="12dp" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="15sp"
+            android:backgroundTint="#0A1040"
+            app:borderWidth="0dp"
+            android:src="@drawable/ic_plus_24dp" />
+
+    </FrameLayout>
 
 
 

@@ -6,6 +6,43 @@ public class MainListItem {
     private String destName;
     private String destDetail;
 
+    public void setSrcLat(double srcLat) {
+        this.srcLat = srcLat;
+    }
+
+    public void setSrcLng(double srcLng) {
+        this.srcLng = srcLng;
+    }
+
+    public void setDestLat(double destLat) {
+        this.destLat = destLat;
+    }
+
+    public void setDestLng(double destLng) {
+        this.destLng = destLng;
+    }
+
+    public double getSrcLat() {
+        return srcLat;
+    }
+
+    public double getSrcLng() {
+        return srcLng;
+    }
+
+    public double getDestLat() {
+        return destLat;
+    }
+
+    public double getDestLng() {
+        return destLng;
+    }
+
+    private double srcLat;
+    private double srcLng;
+    private double destLat;
+    private double destLng;
+
     public String getSrcName() {
         return srcName;
     }
@@ -38,10 +75,16 @@ public class MainListItem {
         this.destDetail = destDetail;
     }
 
-    public MainListItem(String srcName, String srcDetail, String destName, String destDetail) {
+    public MainListItem(String srcName, String srcDetail, String destName, String destDetail, double srcLat, double srcLng, double destLat, double destLng) {
         this.srcName = "출발 | "+srcName;
         this.srcDetail = srcDetail;
         this.destName = "도착 | "+destName;
         this.destDetail = destDetail;
+        this.srcLat = srcLat;
+        this.srcLng = srcLng;
+        this.destLat = destLat;
+        this.destLng = destLng;
     }
+
+
 }

@@ -212,6 +212,8 @@ public class MapResultActivity extends AppCompatActivity implements MapView.MapV
                         MainActivity.srcDetail = address;
                     }
                     MainActivity.srcName = name;
+                    MainActivity.srcLat = x;
+                    MainActivity.srcLng = y;
                 }
                 else {
                     if(address == null || address == "") {
@@ -221,6 +223,8 @@ public class MapResultActivity extends AppCompatActivity implements MapView.MapV
                         MainActivity.destDetail = address;
                     }
                     MainActivity.destName = name;
+                    MainActivity.destLat = x;
+                    MainActivity.destLng = y;
                 }
 //                Intent intent = new Intent(this, MainActivity.class);
 //                intent.putExtra("name", name);

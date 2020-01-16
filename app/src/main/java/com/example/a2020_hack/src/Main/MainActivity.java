@@ -29,6 +29,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -58,6 +60,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public static String srcDetail ="";
     public static String destName = "";
     public static String destDetail = "";
+    public static double srcLat = 0;//위도
+    public static double srcLng = 0;//경도
+    public static double destLat = 0;//위도
+    public static double destLng = 0;//경도
+
+    public static String HOME_NAME = "은마아파트";
+    public static String HOME_DETAIL= "서울 강남구 대치동 316";
+    public static double HOME_LAT= 37.4499641433847;
+    public static double HOME_LNG= 127.06532735974666;
+    public static String SCHOOL_NAME = "인하대학교 용현캠퍼스";
+    public static String SCHOOL_DETAIL = "인천 미추홀구 용현동 253";
+    public static double SCHOOL_LAT = 37.4499641433847;
+    public static double SCHOOL_LNG = 126.653467210032;
+    public static String FRIEND_NAME = "인천용현엑슬루타워아파트";
+    public static String FRIEND_DETAIL = "인천 미추홀구 용현동 659";
+    public static double FRIEND_LAT = 37.45737463922806;
+    public static double FRIEND_LNG = 126.63744904712938;
+
+
+
 
     private EditText mEtSrc, mEtDest;
 
@@ -68,8 +90,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private MainAdapter mMainAdapter;
     private ListView mLvHistory;
     private Gson gson;
-    private SharedPreferences sharedPreferences;
-
+    private SharedPreferences sSharedPreferences;
+    //현우 fab
+    private Animation fab_open, fab_close;
+    private Boolean isFabOpen = false;
+    private FloatingActionButton fab, fab1, fab2,fab3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +116,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         //현우 start
         mLvHistory = findViewById(R.id.lv_recent_history);
 
+        fab_open = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
+        fab_close = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab1 = (FloatingActionButton) findViewById(R.id.fab1);
+        fab2 = (FloatingActionButton) findViewById(R.id.fab2);
+        fab3 = (FloatingActionButton) findViewById(R.id.fab3);
+
+        fab.setOnClickListener(this);
+        fab1.setOnClickListener(this);
+        fab2.setOnClickListener(this);
+        fab3.setOnClickListener(this);
 
         mEtSrc = findViewById(R.id.main_src_et);
         mEtDest = findViewById(R.id.main_dest_et);
@@ -104,22 +141,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         if (gson.fromJson(json, type) != null) {
             mMainListItems = gson.fromJson(json, type);
         } else {
-            for (int i = 0; i < 3; i++) {
-                mMainListItems.add(new MainListItem("인하대후문삼거리", "인천 미추홀구 낙성동로 135(용현동)", "주안역[1호선]", "인천 미추홀구 주안로 95-19"));
-            }
+
         }
 
         mMainAdapter = new MainAdapter(mMainListItems, this);
         mLvHistory.setAdapter(mMainAdapter);
     }
-//
-//    public void saveRecent() {
-//        mMainAdapter.notifyDataSetChanged();
-//        SharedPreferences.Editor editor = sSharedPreferences.edit();
-//        String json = gson.toJson(mMainListItems);
-//        editor.putString("recent", json);
-//        editor.apply();
-//    }
+
 
     @Override
     protected void onRestart() {
@@ -137,6 +165,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             mEtDest.setText("예) 용현동 12-3 또는 용현아파트");
         }
         else {
+
             mEtDest.setText(destName);
         }
     }
@@ -196,9 +225,75 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 intent.putExtra("mode", 1);
                 startActivity(intent);
                 break;
+            case R.id.main_route_search :
+
+                showCustomToast("경로 찾기 시작합니다!");
+                saveRecent();
+                break;
+
+            case R.id.fab:
+                anim();
+                break;
+            case R.id.fab1:
+                anim();
+                destName=HOME_NAME;
+                destDetail=HOME_DETAIL;
+                destLat=HOME_LAT;
+                destLng=HOME_LNG;
+                mEtDest.setText(destName);
+                break;
+            case R.id.fab2:
+                anim();
+                destName=SCHOOL_NAME;
+                destDetail=SCHOOL_DETAIL;
+                destLat=SCHOOL_LAT;
+                destLng=SCHOOL_LNG;
+                mEtDest.setText(destName);
+                break;
+            case R.id.fab3:
+                anim();
+                destName=FRIEND_NAME;
+                destDetail=FRIEND_DETAIL;
+                destLat=FRIEND_LAT;
+                destLng=FRIEND_LNG;
+                mEtDest.setText(destName);
+                break;
+
         }
     }
 
+
+    public void anim() {
+
+        if (isFabOpen) {
+            fab.setBackgroundResource(R.drawable.ic_plus_24dp);
+            fab1.startAnimation(fab_close);
+            fab2.startAnimation(fab_close);
+            fab3.startAnimation(fab_close);
+            fab1.setClickable(false);
+            fab2.setClickable(false);
+            fab3.setClickable(false);
+            isFabOpen = false;
+        } else {
+            fab.setBackgroundResource(R.drawable.ic_close_24dp);
+            fab1.startAnimation(fab_open);
+            fab2.startAnimation(fab_open);
+            fab3.startAnimation(fab_open);
+            fab1.setClickable(true);
+            fab2.setClickable(true);
+            fab3.setClickable(true);
+            isFabOpen = true;
+        }
+    }
+
+        public void saveRecent() {
+        mMainListItems.add(0,new MainListItem(srcName,srcDetail,destName,destDetail,srcLat,srcLng,destLat,destLng));
+        mMainAdapter.notifyDataSetChanged();
+        SharedPreferences.Editor editor = sSharedPreferences.edit();
+        String json = gson.toJson(mMainListItems);
+        editor.putString("recent", json);
+        editor.apply();
+    }
     @Nullable
 
     public static String getHashKey(Context context) {
