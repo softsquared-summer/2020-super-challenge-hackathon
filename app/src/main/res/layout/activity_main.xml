@@ -15,7 +15,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="#3D4266"
         android:orientation="vertical">
 
@@ -129,6 +129,15 @@
             android:layout_marginTop="10dp"
             android:text="최근 검색 기록"></TextView>
     </LinearLayout>
+
+    <ListView
+        android:id="@+id/lv_recent_history"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#3D4266"
+        android:padding="5dp"
+        android:dividerHeight="15dp"
+        />
 
 
 
