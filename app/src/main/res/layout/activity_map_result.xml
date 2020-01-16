@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#0A1040"
+    >
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:src="@drawable/not_sleep_logo"></ImageView>
+
+    <FrameLayout
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:id="@+id/map_show"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+        <ImageView
+            android:id="@+id/marker_result"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/marker"
+            android:layout_gravity="center"/>
+    </FrameLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:id="@+id/map_result_default_addr_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="25sp"
+            android:gravity="center_vertical"
+            android:textColor="#ffffff"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/result_finish_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:paddingBottom="20dp"
+            android:onClick="onClick"
+            android:background="@drawable/btn_main_background"
+            android:includeFontPadding="false"
+            android:paddingTop="5dp"
+            android:text="선택 완료"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            android:layout_marginBottom="15dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+</LinearLayout>

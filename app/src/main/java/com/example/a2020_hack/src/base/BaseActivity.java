@@ -33,9 +33,7 @@ public class BaseActivity extends AppCompatActivity {
                 view.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             }
         }
-        if (sSharedPreferences == null) {
-            sSharedPreferences = getApplicationContext().getSharedPreferences(ApplicationClass.TAG, Context.MODE_PRIVATE);
-        }
+
     }
 
 
