@@ -56,6 +56,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public static String srcDetail ="";
     public static String destName = "";
     public static String destDetail = "";
+    public static double srcLat = 0;//위도
+    public static double srcLng = 0;//경도
+    public static double destLat = 0;//위도
+    public static double destLng = 0;//경도
 
     private EditText mEtSrc, mEtDest;
 
@@ -94,22 +98,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         if (gson.fromJson(json, type) != null) {
             mMainListItems = gson.fromJson(json, type);
         } else {
-            for (int i = 0; i < 3; i++) {
-                mMainListItems.add(new MainListItem("인하대후문삼거리", "인천 미추홀구 낙성동로 135(용현동)", "주안역[1호선]", "인천 미추홀구 주안로 95-19"));
+            for (int i = 0; i < 5; i++) {
+                mMainListItems.add(new MainListItem("인하대후문삼거리", "인천 미추홀구 낙성동로 135(용현동)", "주안역[1호선]", "인천 미추홀구 주안로 95-19"
+                ,0,0,0,0));
             }
         }
 
         mMainAdapter = new MainAdapter(mMainListItems, this);
         mLvHistory.setAdapter(mMainAdapter);
     }
-//
-//    public void saveRecent() {
-//        mMainAdapter.notifyDataSetChanged();
-//        SharedPreferences.Editor editor = sSharedPreferences.edit();
-//        String json = gson.toJson(mMainListItems);
-//        editor.putString("recent", json);
-//        editor.apply();
-//    }
+
 
     @Override
     protected void onRestart() {
@@ -186,9 +184,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 intent.putExtra("mode", 1);
                 startActivity(intent);
                 break;
+            case R.id.main_route_search :
+
+                showCustomToast("경로 찾기 시작합니다!");
+                saveRecent();
+                break;
+
         }
     }
 
+
+
+        public void saveRecent() {
+        mMainListItems.add(0,new MainListItem(srcName,srcDetail,destName,destDetail,srcLat,srcLng,destLat,destLng));
+
+        mMainAdapter.notifyDataSetChanged();
+        SharedPreferences.Editor editor = sSharedPreferences.edit();
+        String json = gson.toJson(mMainListItems);
+        editor.putString("recent", json);
+        editor.apply();
+    }
     @Nullable
 
     public static String getHashKey(Context context) {

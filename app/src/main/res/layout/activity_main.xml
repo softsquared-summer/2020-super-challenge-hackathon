@@ -133,7 +133,7 @@
     <ListView
         android:id="@+id/lv_recent_history"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="#3D4266"
         android:padding="5dp"
         android:dividerHeight="15dp"
