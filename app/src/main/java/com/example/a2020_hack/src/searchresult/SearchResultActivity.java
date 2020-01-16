@@ -5,9 +5,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.StrictMode;
 
 import com.example.a2020_hack.R;
 import com.example.a2020_hack.src.base.BaseActivity;
+import com.example.a2020_hack.src.searchresult.models.PointSearchResult;
+import com.example.a2020_hack.src.searchresult.models.SearchModel;
 import com.example.a2020_hack.src.searchresult.models.SearchPublicTransResult;
 import com.example.a2020_hack.src.searchresult.models.SearchPublicTransResultInfo;
 import com.example.a2020_hack.src.searchresult.models.SearchPublicTransResultLane;
@@ -20,7 +23,13 @@ import com.odsay.odsayandroidsdk.OnResultCallbackListener;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class SearchResultActivity extends BaseActivity {
@@ -34,8 +43,30 @@ public class SearchResultActivity extends BaseActivity {
     private RecyclerView mRecyclerView;
     private SearchResultAdapter mSearchResultAdapter;
 
+    private String arsID;
     private int busNo;
-    private boolean returnFlag;
+    private String busRouteID;
+
+    boolean inadirection = false, inarrmsg1 = false;
+    String adirection = null, arrmsg1 = null;
+    ArrayList<String> mArrayLisyBusRouteId = new ArrayList<>();
+    ArrayList<String> mArrayListarr = new ArrayList<>();
+    ArrayList<String> mArrayListNextBus = new ArrayList<>();
+
+    boolean busRouteId, busRouteNum, nextBus;
+    String stringBusRouteId, stringBusRouteNum, stringNextBus;
+    ArrayList<String> mArrayLisyBusId = new ArrayList<>();
+    ArrayList<String> mArrayListBusNum = new ArrayList<>();
+
+    ArrayList<SearchModel> mSearchModels = new ArrayList<>();
+    private static int mSearchModelPosition = 0;
+
+    private boolean loopFlag = true;
+    private boolean loopFlag2 = true;
+    private boolean loopFlag2End = false;
+
+    ArrayList<PointSearchResult> pointSearchResults = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +76,7 @@ public class SearchResultActivity extends BaseActivity {
         mRecyclerView = findViewById(R.id.searchResult_rv);
         mSearchResultAdapter = new SearchResultAdapter(mContext, mArrayList);
         mRecyclerView.setAdapter(mSearchResultAdapter);
+        StrictMode.enableDefaults();
 
         oDsayService = ODsayService.init(this, getString(R.string.odsay_key));
         oDsayService.setReadTimeout(5000);
@@ -56,6 +88,8 @@ public class SearchResultActivity extends BaseActivity {
                 hideProgressDialog();
                 if(api == API.SEARCH_PUB_TRANS_PATH){
                     try {
+                        int pointDistance = oDsayData.getJson().getJSONObject("result").getInt("pointDistance"); // 목적지까지의 직선거리
+
                         for(int i=0; i<oDsayData.getJson().getJSONObject("result").getJSONArray("path").length(); i++){
                             JSONObject jsonObject = oDsayData.getJson().getJSONObject("result").getJSONArray("path").getJSONObject(i);
                             double trafficDistance = jsonObject.getJSONObject("info").getDouble("trafficDistance");
@@ -123,9 +157,28 @@ public class SearchResultActivity extends BaseActivity {
                         }
 //                        GraphLoadLane("0:0@"+mArrayList.get(0).getInfo().getMapObj());
 //                        System.out.println(mArrayList.get(0).getSubPath().get(1).getStartName()+"아아아아아아");
-                        busNo = mArrayList.get(1).getSubPath().get(1).getLane().get(0).getBusNo();
+                        for(int i=0; i<mArrayList.size(); i++){
+                            if(mArrayList.get(i).getPathType()==2){
+                                for(int j=0; j<mArrayList.get(i).getSubPath().size(); j++){
+                                    if(mArrayList.get(i).getSubPath().get(j).getTrafficType()==2){
+                                        for(int k=0; k<mArrayList.get(i).getSubPath().get(j).getLane().size(); k++){
+                                            loopFlag = true;
+                                            System.out.println("size : " + mArrayList.get(i).getSubPath().get(j).getLane().size());
+                                            System.out.println("loop K: " + k);
+                                            busNo = mArrayList.get(i).getSubPath().get(j).getLane().get(k).getBusNo();
+                                            System.out.println("buisNo: " + busNo);
+                                            mSearchModels.add(new SearchModel(busNo, i, j, k, mArrayList.get(i).getSubPath().get(j).getStartName()));
+                                            System.out.println("startName: " + mArrayList.get(i).getSubPath().get(j).getStartName());
+//                                            SearchStation(mArrayList.get(i).getSubPath().get(j).getStartName());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        // 슬립 걸어줘야함?
+//                        busNo = mArrayList.get(1).getSubPath().get(1).getLane().get(0).getBusNo();
                         mSearchResultAdapter.notifyDataSetChanged();
-                        SearchStation(mArrayList.get(1).getSubPath().get(1).getStartName());
+//                        SearchStation(mArrayList.get(1).getSubPath().get(1).getStartName());
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -133,42 +186,77 @@ public class SearchResultActivity extends BaseActivity {
                 else if(api == API.LOAD_LANE){
 
                 }
-                else if(api == API.SEARCH_STATION){
+                else if(api == API.POINT_SEARCH){
                     try {
-                        System.out.println(oDsayData.getJson().getJSONObject("result").getJSONArray("station"));
-                        for(int i=0; i<oDsayData.getJson().getJSONObject("result").getJSONArray("station").length(); i++){
-                            System.out.println("가져오는 busNo: " + busNo);
-                            JSONObject jsonObject = oDsayData.getJson().getJSONObject("result").getJSONArray("station").getJSONObject(i);
-                            for(int j = 0; j<jsonObject.getJSONArray("businfo").length(); j++){
-                                System.out.println("busNo: " + jsonObject.getJSONArray("businfo").getJSONObject(j).getString("busNo"));
-                                if(jsonObject.getJSONArray("businfo").getJSONObject(j).getString("busNo").equals(busNo+"")){
-                                    String arsID = jsonObject.getString("arsID");
-                                    arsID = arsID.replace("-","");
-                                    System.out.println("arsID: " + arsID);
-                                    returnFlag = true;
-                                    return;
-                                }
-                            }
+                        JSONArray jsonArray = oDsayData.getJson().getJSONObject("result").getJSONArray("station");
+                        for(int i=0; i<7; i++){
+                            String stationName = jsonArray.getJSONObject(i).getString("stationName");
+                            int stationID = jsonArray.getJSONObject(i).getInt("stationID");
+                            double x = jsonArray.getJSONObject(i).getDouble("x");
+                            double y = jsonArray.getJSONObject(i).getDouble("y");
+                            String arsID = jsonArray.getJSONObject(i).getString("arsID");
+                            pointSearchResults.add(new PointSearchResult(stationName, stationID, x, y, arsID));
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    System.out.println("사이즈: " + pointSearchResults.size());
+                    for(int i=0; i<pointSearchResults.size(); i++){
+                        SearchPublicTransPath("126.653976", "37.534922", Double.toString(pointSearchResults.get(i).getX()), Double.toString(pointSearchResults.get(i).getY()), "0", "0", "0");
+                    }
                 }
+//                else if(api == API.SEARCH_STATION){
+//                    try {
+////                        System.out.println(oDsayData.getJson().getJSONObject("result").getJSONArray("station"));
+//                        for(int i=0; i<oDsayData.getJson().getJSONObject("result").getJSONArray("station").length(); i++){
+//                            System.out.println("가져오는 busNo: " + busNo);
+//                            JSONObject jsonObject = oDsayData.getJson().getJSONObject("result").getJSONArray("station").getJSONObject(i);
+//                            for(int j = 0; j<jsonObject.getJSONArray("businfo").length(); j++){
+////                                System.out.println("busNo: " + jsonObject.getJSONArray("businfo").getJSONObject(j).getString("busNo"));
+//                                if(jsonObject.getJSONArray("businfo").getJSONObject(j).getString("busNo").equals(busNo+"")){
+//                                    loopFlag2 = true;
+//                                    arsID = jsonObject.getString("arsID");
+//                                    arsID = arsID.replace("-","");
+////                                    System.out.println("arsID: " + arsID);
+////                                    getBusRouteNum(arsID);
+////                                    Thread th = new Thread(new Runnable() {
+////                                        @Override
+////                                        public void run() {
+////                                            while (loopFlag2){
+////
+////                                            }
+////                                        }
+////                                    });
+////                                    th.start();
+//                                    return;
+//                                }
+//                                if(j==jsonObject.getJSONArray("businfo").length()-1){
+//                                    loopFlag2End=true;
+//                                }
+//                            }
+//                        }
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
             }
 
             @Override
             public void onError(int i, String s, API api) {
                 hideProgressDialog();
-                showCustomToast("네트워크 연결 에러입니다.");
+                showCustomToast("네트워크 연결 에러입니다. " + s);
             }
         };
 
-        SearchPublicTransPath("126.926493082645", "37.6134436427887", "127.126936754911", "37.5004198786564", "0", "0", "0");
+//        SearchPublicTransPath("126.926493082645", "37.6134436427887", "127.126936754911", "37.5004198786564", "0", "0", "0");
+//        getBusRouteNum("12021");
+        NearStation("126.926493082645", "37.6134436427887");
     }
 
     void SearchPublicTransPath(String startX, String startY, String endX, String endY, String opt, String searchType, String searchPathType){
         showProgressDialog(this);
         oDsayService.requestSearchPubTransPath(startX, startY, endX, endY, opt, searchType, searchPathType, onResultCallbackListener);
+
     }
 
     void GraphLoadLane(String mapObj){
@@ -177,8 +265,200 @@ public class SearchResultActivity extends BaseActivity {
     }
 
     void SearchStation(String stationName){
-        System.out.println("호출");
+        System.out.println("stationName: " + stationName);
         showProgressDialog(this);
-        oDsayService.requestSearchStation(stationName,"","","","","",onResultCallbackListener);
+        oDsayService.requestSearchStation(stationName, "", "", "", "", "", new OnResultCallbackListener() {
+            @Override
+            public void onSuccess(ODsayData oDsayData, API api) {
+                try {
+//                        System.out.println(oDsayData.getJson().getJSONObject("result").getJSONArray("station"));
+                    System.out.println("가져오는 busName: " + mSearchModels.get(mSearchModelPosition).getBusNo() + "   " + mSearchModels.size());
+                    getBusRouteNum("12021");
+                    for(int i=0; i<oDsayData.getJson().getJSONObject("result").getJSONArray("station").length(); i++){
+                        JSONObject jsonObject = oDsayData.getJson().getJSONObject("result").getJSONArray("station").getJSONObject(i);
+                        for(int j = 0; j<jsonObject.getJSONArray("businfo").length(); j++){
+//                                System.out.println("busNo: " + jsonObject.getJSONArray("businfo").getJSONObject(j).getString("busNo"));
+                            if(jsonObject.getJSONArray("businfo").getJSONObject(j).getString("busNo").equals(mSearchModels.get(mSearchModelPosition).getBusNo()+"")){
+                                loopFlag2 = true;
+                                arsID = jsonObject.getString("arsID");
+                                arsID = arsID.replace("-","");
+                                System.out.println("arsID: " + arsID);
+//                                getBusRouteNum(arsID);
+//                                try {
+//                                    Thread.sleep(1000);
+//                                } catch (InterruptedException e) {
+//                                    e.printStackTrace();
+//                                }
+//                                    System.out.println("arsID: " + arsID);
+//
+//                                    Thread th = new Thread(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            while (loopFlag2){
+//
+//                                            }
+//                                        }
+//                                    });
+//                                    th.start();
+                                return;
+                            }
+                            if(j==jsonObject.getJSONArray("businfo").length()-1){
+                                loopFlag2End=true;
+                            }
+                        }
+                    }
+                    mSearchModelPosition++;
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                hideProgressDialog();
+            }
+
+            @Override
+            public void onError(int i, String s, API api) {
+
+            }
+        });
     }
+
+    void getBusRouteNum(String arsID) {
+        try {
+            showProgressDialog(this);
+            URL url = new URL("http://ws.bus.go.kr/api/rest/stationinfo/getRouteByStation?serviceKey=sVZDRtsumTQzV33eDPQGmV%2Fz32MrR7Ttp7bl9XoiOaLUbftNwMTHrGUpi9UPMu58CWL6TQ8xImYNdIJQDV8ENg%3D%3D&arsId=" + arsID); //검색 URL부
+            InputStream is = url.openStream();
+            XmlPullParserFactory parserCreator = XmlPullParserFactory.newInstance();
+            XmlPullParser parser = parserCreator.newPullParser();
+            parser.setInput(new InputStreamReader(is, StandardCharsets.UTF_8));
+            int parserEvent = parser.getEventType();
+//            System.out.println("파싱시작합니다.");
+
+            while (parserEvent != XmlPullParser.END_DOCUMENT) {
+                switch (parserEvent) {
+                    case XmlPullParser.START_TAG://parser가 시작 태그를 만나면 실행
+                        if (parser.getName().equals("busRouteId")) { //title 만나면 내용을 받을수 있게 하자
+                            busRouteId = true;
+                        }
+                        if (parser.getName().equals("busRouteNm")) { //address 만나면 내용을 받을수 있게 하자
+                            busRouteNum = true;
+                        }
+                        if(parser.getName().equals("nextBus")){
+                           nextBus = true;
+                        }
+                        break;
+
+                    case XmlPullParser.TEXT://parser가 내용에 접근했을때
+                        if (busRouteId) { //isTitle이 true일 때 태그의 내용을 저장.
+                            stringBusRouteId = parser.getText();
+                            mArrayLisyBusId.add(stringBusRouteId);
+//                            System.out.println(stringBusRouteId);
+                            busRouteId = false;
+
+                        }
+                        if (busRouteNum) { //isAddress이 true일 때 태그의 내용을 저장.
+                            stringBusRouteNum = parser.getText();
+                            mArrayListBusNum.add(stringBusRouteNum);
+//                            System.out.println(stringBusRouteNum);
+                            busRouteNum = false;
+                        }
+                        if(nextBus){
+                            stringNextBus = parser.getText();
+                            mArrayListNextBus.add(stringNextBus);
+                            nextBus = false;
+                        }
+                        break;
+                    case XmlPullParser.END_TAG:
+                        if (parser.getName().equals("itemList")) {
+
+                        }
+                        break;
+                }
+                parserEvent = parser.next();
+            }
+
+            System.out.println("busRouteID: " + busRouteID);
+
+            for(int i=0; i<mArrayListBusNum.size(); i++){
+                if(mArrayListBusNum.get(i).equals(Integer.toString(busNo))){
+                    if(Integer.parseInt(mArrayListNextBus.get(i))<0) { // 막차 끊김
+
+                    }
+                    busRouteID = mArrayLisyBusId.get(i);
+                }
+            }
+            mArrayLisyBusId.clear();
+            mArrayListBusNum.clear();
+//            System.out.println(mArrayLisyBusId.size() + " " +mArrayListBusNum.size());
+//            SearcharsID(arsID);
+            hideProgressDialog();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    void SearcharsID(String arsID){
+        try {
+            showProgressDialog(this);
+            URL url = new URL("http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid?serviceKey=sVZDRtsumTQzV33eDPQGmV%2Fz32MrR7Ttp7bl9XoiOaLUbftNwMTHrGUpi9UPMu58CWL6TQ8xImYNdIJQDV8ENg%3D%3D&arsId="+arsID); //검색 URL부
+            InputStream is = url.openStream();
+            XmlPullParserFactory parserCreator = XmlPullParserFactory.newInstance();
+            XmlPullParser parser = parserCreator.newPullParser();
+            parser.setInput(new InputStreamReader(is, StandardCharsets.UTF_8));
+            int parserEvent = parser.getEventType();
+//            System.out.println("파싱시작합니다.");
+
+            while (parserEvent != XmlPullParser.END_DOCUMENT) {
+                switch (parserEvent) {
+                    case XmlPullParser.START_TAG://parser가 시작 태그를 만나면 실행
+                        if (parser.getName().equals("arrmsg1")) { //address 만나면 내용을 받을수 있게 하자
+                            inarrmsg1 = true;
+                        }
+                        if (parser.getName().equals("busRouteId")) { //busRouteId 만나면 내용을 받을수 있게 하자
+                            inadirection = true;
+                        }
+                        break;
+
+                    case XmlPullParser.TEXT://parser가 내용에 접근했을때
+                        if (inarrmsg1) { //isAddress이 true일 때 태그의 내용을 저장.
+                            arrmsg1 = parser.getText();
+                            mArrayListarr.add(arrmsg1);
+                            inarrmsg1 = false;
+                        }
+                        if (inadirection) { //busRouteId true일 때 태그의 내용을 저장.
+                            adirection = parser.getText();
+                            mArrayLisyBusRouteId.add(adirection);
+                            inadirection = false;
+                        }
+                        break;
+                    case XmlPullParser.END_TAG:
+                        if (parser.getName().equals("itemList")) {
+                        }
+                        break;
+                }
+                parserEvent = parser.next();
+            }
+            for(int i=0; i<mArrayLisyBusRouteId.size(); i++){
+                if(mArrayLisyBusRouteId.get(i).equals(busRouteID)){
+                    System.out.println("최종: " + mArrayListarr.get(i));
+                }
+            }
+            mArrayLisyBusRouteId.clear();
+            mArrayListarr.clear();
+            loopFlag2 = false;
+            if(loopFlag2End){
+                loopFlag = false;
+                loopFlag2End = false;
+            }
+            hideProgressDialog();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    void NearStation(String x, String y){
+        showProgressDialog(this);
+        oDsayService.requestPointSearch(x,y,"5000","1", onResultCallbackListener);
+    }
+
+
 }
+

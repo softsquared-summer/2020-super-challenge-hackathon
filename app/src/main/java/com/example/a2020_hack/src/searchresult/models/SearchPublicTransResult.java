@@ -6,6 +6,12 @@ import java.util.ArrayList;
 
 public class SearchPublicTransResult {
 
+    boolean isValid;
+
+    public boolean isValid() {
+        return isValid;
+    }
+
     @SerializedName("pathType")
     int pathType;
 
@@ -36,5 +42,6 @@ public class SearchPublicTransResult {
         this.pathType = pathType;
         this.info = info;
         this.subPath = subPath;
+        this.isValid = true;
     }
 }

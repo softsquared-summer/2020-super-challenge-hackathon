@@ -16,6 +16,7 @@ import android.os.Bundle;
 
 import com.example.a2020_hack.src.MapSearch.MapSearchActivity;
 import com.example.a2020_hack.src.base.BaseActivity;
+import com.example.a2020_hack.src.searchresult.SearchResultActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -29,6 +30,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -76,6 +78,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         getMyLocation();
+
+        ImageView mImageViewTemp = findViewById(R.id.temp);
+        mImageViewTemp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this, SearchResultActivity.class));
+            }
+        });
 
         getHashKey(this);
         //현우 start
