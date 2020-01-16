@@ -94,6 +94,7 @@ public class SearchResultActivity extends BaseActivity {
                 hideProgressDialog();
                 if(api == API.SEARCH_PUB_TRANS_PATH){
                     try {
+                        System.out.println("대중교통 길찾기");
                         int pointDistance = oDsayData.getJson().getJSONObject("result").getInt("pointDistance"); // 목적지까지의 직선거리
 
                         for(int i=0; i<oDsayData.getJson().getJSONObject("result").getJSONArray("path").length(); i++){
@@ -163,31 +164,34 @@ public class SearchResultActivity extends BaseActivity {
                         }
 //                        GraphLoadLane("0:0@"+mArrayList.get(0).getInfo().getMapObj());
 //                        System.out.println(mArrayList.get(0).getSubPath().get(1).getStartName()+"아아아아아아");
-                        for(int i=0; i<mArrayList.size(); i++){
-                            if(mArrayList.get(i).getPathType()==2){
-                                for(int j=0; j<mArrayList.get(i).getSubPath().size(); j++){
-                                    if(mArrayList.get(i).getSubPath().get(j).getTrafficType()==2){
-                                        for(int k=0; k<mArrayList.get(i).getSubPath().get(j).getLane().size(); k++){
-                                            loopFlag = true;
-                                            System.out.println("size : " + mArrayList.get(i).getSubPath().get(j).getLane().size());
-                                            System.out.println("loop K: " + k);
-                                            busNo = mArrayList.get(i).getSubPath().get(j).getLane().get(k).getBusNo();
-                                            System.out.println("buisNo: " + busNo);
-                                            mSearchModels.add(new SearchModel(busNo, i, j, k, mArrayList.get(i).getSubPath().get(j).getStartName()));
-                                            System.out.println("startName: " + mArrayList.get(i).getSubPath().get(j).getStartName());
+
+//                        SearchStation(mArrayList.get(1).getSubPath().get(1).getStartName());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        System.out.println("에러: " + e.toString());
+                    }
+                    System.out.println("사이즈2: " + mArrayList.size());
+                    for(int i=0; i<mArrayList.size(); i++){
+                        if(mArrayList.get(i).getPathType()==2){
+                            for(int j=0; j<mArrayList.get(i).getSubPath().size(); j++){
+                                if(mArrayList.get(i).getSubPath().get(j).getTrafficType()==2){
+                                    for(int k=0; k<mArrayList.get(i).getSubPath().get(j).getLane().size(); k++){
+                                        loopFlag = true;
+                                        System.out.println("size : " + mArrayList.get(i).getSubPath().get(j).getLane().size());
+                                        System.out.println("loop K: " + k);
+                                        busNo = mArrayList.get(i).getSubPath().get(j).getLane().get(k).getBusNo();
+                                        System.out.println("buisNo: " + busNo);
+                                        mSearchModels.add(new SearchModel(busNo, i, j, k, mArrayList.get(i).getSubPath().get(j).getStartName()));
+                                        System.out.println("startName: " + mArrayList.get(i).getSubPath().get(j).getStartName());
 //                                            SearchStation(mArrayList.get(i).getSubPath().get(j).getStartName());
-                                        }
                                     }
                                 }
                             }
                         }
-                        // 슬립 걸어줘야함?
-//                        busNo = mArrayList.get(1).getSubPath().get(1).getLane().get(0).getBusNo();
-                        mSearchResultAdapter.notifyDataSetChanged();
-//                        SearchStation(mArrayList.get(1).getSubPath().get(1).getStartName());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
+                    // 슬립 걸어줘야함?
+//                        busNo = mArrayList.get(1).getSubPath().get(1).getLane().get(0).getBusNo();
+                    mSearchResultAdapter.notifyDataSetChanged();
                 }
                 else if(api == API.LOAD_LANE){
 
