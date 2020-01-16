@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.StrictMode;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.example.a2020_hack.R;
 import com.example.a2020_hack.src.Main.MainActivity;
@@ -32,6 +34,9 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 
 import static com.example.a2020_hack.src.Main.MainActivity.srcLng;
 
@@ -113,6 +118,12 @@ public class SearchResultActivity extends BaseActivity {
                             int subwayStationCount = jsonObject.getJSONObject("info").getInt("subwayStationCount");
                             double totalDistance = jsonObject.getJSONObject("info").getDouble("totalDistance");
                             int totalWalkTime = jsonObject.getJSONObject("info").getInt("totalWalkTime");
+
+
+
+
+
+
                             SearchPublicTransResultInfo searchPublicTransResultInfo = new SearchPublicTransResultInfo(trafficDistance, totalWalk, totalTime, payment, busTransitCount, subwayTransitCount, mapObj, firstStartStation, lastEndStation, totalStationCount, busStationCount, subwayStationCount, totalDistance, totalWalkTime);
                             JSONArray jsonArray = jsonObject.getJSONArray("subPath");
                             ArrayList<SearchPublicTransResultSubPath> searchPublicTransResultSubPath = new ArrayList<>();
@@ -137,6 +148,34 @@ public class SearchResultActivity extends BaseActivity {
                                     int busNo = jsonObject1.getJSONArray("lane").getJSONObject(0).getInt("busNo");
                                     int type = jsonObject1.getJSONArray("lane").getJSONObject(0).getInt("type");
                                     int busID = jsonObject1.getJSONArray("lane").getJSONObject(0).getInt("busID");
+
+                                    double x1 = endX;
+                                    double y1 = endY;
+
+                                    double x2 = MainActivity.destLng;
+                                    double y2 = MainActivity.destLat;
+
+                                    double dis = distance(y1, x1, y2, x2,"meter");
+                                    int won = 0;
+                                    if(dis<2000) {
+                                        won = 3800;
+                                    }
+                                    else {
+                                        won +=(int) ((dis-2000)/132)* 100;
+                                    }
+
+
+                                    Log.i("TESTTESTx1", String.valueOf(x1));
+                                    Log.i("TESTTESTy1", String.valueOf(y1));
+                                    Log.i("TESTTESTx2", String.valueOf(x2));
+                                    Log.i("TESTTESTy2", String.valueOf(y2));
+
+
+                                    Log.i("TEST", String.valueOf(won));
+
+                                    searchPublicTransResultInfo.setPayment(searchPublicTransResultInfo.getPayment()+won);
+
+
                                     SearchPublicTransResultLane searchPublicTransResultLane = new SearchPublicTransResultLane(busNo, type, busID);
                                     ArrayList<SearchPublicTransResultLane> mSearchPublicTransResultLane = new ArrayList<>();
                                     mSearchPublicTransResultLane.add(searchPublicTransResultLane);
@@ -171,11 +210,11 @@ public class SearchResultActivity extends BaseActivity {
                         System.out.println("에러: " + e.toString());
                     }
                     System.out.println("사이즈2: " + mArrayList.size());
-                    for(int i=0; i<mArrayList.size(); i++){
-                        if(mArrayList.get(i).getPathType()==2){
-                            for(int j=0; j<mArrayList.get(i).getSubPath().size(); j++){
-                                if(mArrayList.get(i).getSubPath().get(j).getTrafficType()==2){
-                                    for(int k=0; k<mArrayList.get(i).getSubPath().get(j).getLane().size(); k++){
+                    for(int i=0; i<mArrayList.size(); i++) {
+                        if (mArrayList.get(i).getPathType() == 2) {
+                            for (int j = 0; j < mArrayList.get(i).getSubPath().size(); j++) {
+                                if (mArrayList.get(i).getSubPath().get(j).getTrafficType() == 2) {
+                                    for (int k = 0; k < mArrayList.get(i).getSubPath().get(j).getLane().size(); k++) {
                                         loopFlag = true;
                                         System.out.println("size : " + mArrayList.get(i).getSubPath().get(j).getLane().size());
                                         System.out.println("loop K: " + k);
@@ -189,6 +228,15 @@ public class SearchResultActivity extends BaseActivity {
                             }
                         }
                     }
+
+                    Collections.sort(mArrayList, new Comparator<SearchPublicTransResult>() {
+                        @Override
+                        public int compare(SearchPublicTransResult left, SearchPublicTransResult right) {
+
+                            return (int) (left.getInfo().getPayment() - right.getInfo().getPayment());
+                        }
+                    });
+
                     // 슬립 걸어줘야함?
 //                        busNo = mArrayList.get(1).getSubPath().get(1).getLane().get(0).getBusNo();
                     mSearchResultAdapter.notifyDataSetChanged();
@@ -261,7 +309,8 @@ public class SearchResultActivity extends BaseActivity {
 
 //        SearchPublicTransPath("126.926493082645", "37.6134436427887", "127.126936754911", "37.5004198786564", "0", "0", "0");
 //        getBusRouteNum("12021");
-        NearStation("127.045249623591", "37.5078361766733");
+        NearStation("126.926493082645", "37.6134436427887");
+
     }
 
     void SearchPublicTransPath(String startX, String startY, String endX, String endY, String opt, String searchType, String searchPathType){
@@ -330,6 +379,37 @@ public class SearchResultActivity extends BaseActivity {
 
             }
         });
+    }
+
+    private static double distance(double lat1, double lon1, double lat2, double lon2, String unit) {
+
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+
+        if (unit == "kilometer") {
+            dist = dist * 1.609344;
+        } else if(unit == "meter"){
+            dist = dist * 1609.344;
+        }
+
+            dist += (int) (dist/1.5);
+
+        return (dist);
+    }
+
+
+    // This function converts decimal degrees to radians
+    private static double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+
+    // This function converts radians to decimal degrees
+    private static double rad2deg(double rad) {
+        return (rad * 180 / Math.PI);
     }
 
     void getBusRouteNum(String arsID) {

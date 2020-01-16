@@ -33,6 +33,10 @@ public class SearchPublicTransResultInfo {
     @SerializedName("payment")
     int payment;
 
+    public void setPayment(int payment) {
+        this.payment = payment;
+    }
+
     @SerializedName("busTransitCount")
     int busTransitCount;
 
